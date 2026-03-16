@@ -1,16 +1,21 @@
 const express = require('express');
+const path = require('path');
 const routes = require('./routes');
 const logger = require('./middlewares/logger');
 
 const app = express();
 
-//Middleware que Intercepta o JSON
+// Middleware to parse JSON
 app.use(express.json());
 
-//Middleware Global
+// Global middleware
 app.use(logger);
 
-//Rotas
+// Static frontend
+const publicDir = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDir));
+
+// API routes
 app.use(routes);
 
 module.exports = app;
