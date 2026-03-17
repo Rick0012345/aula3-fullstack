@@ -1,38 +1,24 @@
 services:
-  api:
-    build:
-      context: .
-    environment:
-      NODE_ENV: production
-      PORT: "3000"
-      MONGO_URL: mongodb://mongodb:27017/meuBanco
-    ports:
-      - "3000:3000"
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    restart: unless-stopped
-
   mongodb:
     image: mongo:7
+    container_name: mongo_fullstack
     ports:
-      - "27017:27017"
+    - "27019:27017"
     volumes:
       - mongo_data:/data/db
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mongosh",
-          "--quiet",
-          "mongodb://localhost:27017/admin",
-          "--eval",
-          "db.adminCommand('ping').ok"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
+
+  mysql:
+    image: mysql:8
+    container_name: mysql_fullstack
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: loja_de_carros
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
 volumes:
   mongo_data:
+  mysql_data:
